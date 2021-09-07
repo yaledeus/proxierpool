@@ -35,7 +35,7 @@ class RedisClient(object):
         score = self.db.zscore(REDIS_KEY, proxy)
         if score and score > MIN_SCORE:
             print('Proxy: ', proxy, ' Current Score: ', score, ' -1')
-            return self.db.zincrby(REDIS_KEY, proxy, -1)
+            return self.db.zincrby(REDIS_KEY, -1, proxy)
         else:
             print('Proxy: ', proxy, ' Current Score: ', score, ' remove')
             return self.db.zrem(REDIS_KEY, proxy)
@@ -47,7 +47,8 @@ class RedisClient(object):
     def max(self, proxy):
         """将代理设置为MAX_SCORE"""
         print('Proxy ', proxy, 'available, set ', MAX_SCORE)
-        return self.db.zadd(REDIS_KEY, MAX_SCORE, proxy)
+        mapping = {proxy: MAX_SCORE, }
+        return self.db.zadd(REDIS_KEY, mapping)
 
     def count(self):
         """获取代理数量"""
